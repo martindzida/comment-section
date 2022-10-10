@@ -12,12 +12,12 @@ export interface CommentProps {
 function App() {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [cId, setCId] = useState(0);
+  const [commentId, setCommentId] = useState(0);
   const [replyParentCId, setReplyParentCId] = useState<number | null>(null);
   const [submitErr, setSubmitErr] = useState(false);
 
-  const getParentId = (pId: number): void => {
-    setReplyParentCId(pId);
+  const getParentId = (id: number): void => {
+    setReplyParentCId(id);
   };
 
   const cancelReply = (): void => {
@@ -34,24 +34,22 @@ function App() {
 
     if (submitErr) setSubmitErr(false);
 
-    const commentObj: CommentProps = {id: cId, content: newComment, replies: [], getParentId: getParentId};
+    const newCommentObj: CommentProps = {id: commentId, content: newComment, replies: [], getParentId};
+    setCommentId(commentId + 1);
 
-    if (replyParentCId !== null) {
-      const parentComment: CommentProps | undefined = comments.find(comment => comment.id === replyParentCId);
-
-      if (parentComment) {
-        const updatedComments = comments.map(comment => {
-          if (comment.id === replyParentCId) {
-            return {...comment, replies: [commentObj, ...parentComment.replies]};
-          }
-          return comment;
-        });
-        setComments(updatedComments);
-      }
-    } else {
-      setComments([...comments, commentObj]);
+    if (replyParentCId === null) {
+      setComments([...comments, newCommentObj]);
+      return;
     }
-    setCId(cId + 1);
+
+    const parentComment: CommentProps | undefined = comments.find(comment => comment.id === replyParentCId);
+
+    if (parentComment) {
+      const updatedComments = comments.map(comment =>
+        comment.id === replyParentCId ? {...comment, replies: [...parentComment.replies, newCommentObj]} : comment
+      );
+      setComments(updatedComments);
+    }
   };
 
   return (
@@ -60,7 +58,7 @@ function App() {
       <div className='bg-slate-600 text-white font-mono font-medium rounded-lg p-20'>
         <p className='text-lg pb-6 flex flex-col'>
           <span>
-            Author: <span className='font-bold'>Lorem</span>
+            Author: <span className='font-bold'>Martin Dzida :]</span>
           </span>
           <span>
             Created: <span className='font-bold'>10. 10. 2022</span>
