@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import Comment from './Comment';
+import ReplyNotification from './ReplyNotification';
 
 export interface CommentProps {
   id: number;
@@ -12,10 +13,14 @@ function App() {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [newComment, setNewComment] = useState('');
   const [cId, setCId] = useState(0);
-  const [replyParentCId, setReplyParentCId] = useState<number>();
+  const [replyParentCId, setReplyParentCId] = useState<number | null>(null);
 
   const getParentId = (pId: number) => {
     setReplyParentCId(pId);
+  };
+
+  const cancelReply = () => {
+    setReplyParentCId(null);
   };
 
   const handleSubmit = (e: any) => {
@@ -61,11 +66,9 @@ function App() {
             value={newComment}
             onChange={e => setNewComment(e.target.value)}
           />
-          {replyParentCId !== undefined && (
-            <strong className='bg-rose-500 text-white font-mono text-semibold rounded-lg p-2 mt-4'>Replying to: #{replyParentCId + 1}</strong>
-          )}
+          {replyParentCId !== null && <ReplyNotification parentCId={replyParentCId} cancelReply={cancelReply} />}
           <input
-            className='bg-slate-500 text-white font-mono text-lg font-semibold p-2 mt-10 rounded-lg cursor-pointer'
+            className='bg-slate-500 text-white font-mono text-lg font-semibold p-2 mt-6 rounded-lg cursor-pointer'
             type='submit'
             value='Add Comment'
           />
