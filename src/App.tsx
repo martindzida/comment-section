@@ -6,23 +6,15 @@ export interface CommentProps {
   id: number;
   content: string;
   replies: CommentProps[];
-  getParentId: (pId: number) => void;
+  setReplyParentId: (id: number) => void;
 }
 
 function App() {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [newComment, setNewComment] = useState('');
   const [commentId, setCommentId] = useState(0);
-  const [replyParentCId, setReplyParentCId] = useState<number | null>(null);
+  const [replyParentId, setReplyParentId] = useState<number | null>(null);
   const [submitErr, setSubmitErr] = useState(false);
-
-  const getParentId = (id: number): void => {
-    setReplyParentCId(id);
-  };
-
-  const cancelReply = (): void => {
-    setReplyParentCId(null);
-  };
 
   const handleSubmit = (e: any): void => {
     e.preventDefault();
@@ -34,23 +26,24 @@ function App() {
 
     if (submitErr) setSubmitErr(false);
 
-    const newCommentObj: CommentProps = {id: commentId, content: newComment, replies: [], getParentId};
+    const newCommentObj: CommentProps = {id: commentId, content: newComment, replies: [], setReplyParentId};
     setCommentId(commentId + 1);
 
-    if (replyParentCId === null) {
+    if (replyParentId === null) {
       setComments([...comments, newCommentObj]);
       return;
     }
 
-    const parentComment: CommentProps | undefined = comments.find(comment => comment.id === replyParentCId);
+    const parentComment: CommentProps | undefined = comments.find(comment => comment.id === replyParentId);
 
     if (parentComment) {
       const updatedComments = comments.map(comment =>
-        comment.id === replyParentCId ? {...comment, replies: [...parentComment.replies, newCommentObj]} : comment
+        comment.id === replyParentId ? {...comment, replies: [...parentComment.replies, newCommentObj]} : comment
       );
       setComments(updatedComments);
     }
   };
+  console.log(comments);
 
   return (
     <div className='w-full h-full flex flex-col justify-center items-center bg-amber-400 p-10'>
@@ -88,7 +81,7 @@ function App() {
             value={newComment}
             onChange={e => setNewComment(e.target.value)}
           />
-          {replyParentCId !== null && <ReplyNotification parentCId={replyParentCId} cancelReply={cancelReply} />}
+          {replyParentId !== null && <ReplyNotification parentCId={replyParentId} cancelReply={() => setReplyParentId(null)} />}
           {submitErr && <strong className='text-rose-500 font-mono text-bold text-lg mt-4'>Comment must not be empty string</strong>}
           <input
             className='bg-slate-500 text-white font-mono text-lg font-semibold p-2 mt-6 rounded-lg cursor-pointer'
@@ -99,7 +92,7 @@ function App() {
       </section>
       <section className='flex flex-col items-center w-full md:w-5/6 border-t-2 border-slate-700 p-8'>
         {comments.map((com: CommentProps) => (
-          <Comment key={com.id} id={com.id} content={com.content} replies={[]} getParentId={getParentId} />
+          <Comment key={com.id} id={com.id} content={com.content} replies={[]} setReplyParentId={setReplyParentId} />
         ))}
       </section>
     </div>
