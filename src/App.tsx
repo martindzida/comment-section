@@ -7,12 +7,19 @@ interface Comment {
 }
 function App() {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState('');
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
+  console.log(newComment);
   return (
     <div className='w-full h-full flex flex-col justify-center items-center bg-amber-400 p-10'>
       <h1 className='text-6xl font-bold text-slate-700 text-center p-20'>Article Of The Year!</h1>
       <div className='bg-slate-600 text-white font-mono font-medium rounded-lg px-12 py-16'>
-        <span className=''>Author: Lorem</span>
+        <p className='text-lg pb-6'>
+          Author: <span className='font-bold'>Lorem</span>
+        </p>
         <article>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe reiciendis quam totam quas? Tempore dolorem facere soluta mollitia at nisi
           aliquam optio laudantium praesentium omnis est corporis aliquid, commodi quo reprehenderit cum aut velit asperiores labore vitae!
@@ -25,17 +32,24 @@ function App() {
           incidunt exercitationem sed neque ab ex sint earum.
         </article>
       </div>
-      <section className='text-center'>
+      <section className='text-center px-12 py-16'>
         <h2 className='text-4xl text-slate-700 font-semibold p-8'>Comments</h2>
-        <div>
-          <form>
+        <div className='bg-slate-600 rounded-lg px-24 py-16'>
+          <form onSubmit={handleSubmit} className='flex flex-col items-center'>
             <textarea
-              className='resize-none bg-slate-600 text-white font-mono text-xl caret-amber-400 rounded-lg'
+              className='resize-none bg-slate-500 text-white font-mono text-lg caret-amber-400 rounded-lg p-6'
               name='newComment'
               id='newComment'
               placeholder='Add new comment...'
               rows={10}
-            ></textarea>
+              value={newComment}
+              onChange={e => setNewComment(e.target.value)}
+            />
+            <input
+              className='bg-slate-500 text-white font-mono text-lg font-semibold p-2 mt-6 rounded-lg cursor-pointer'
+              type='submit'
+              value='Add Comment'
+            />
           </form>
         </div>
       </section>
