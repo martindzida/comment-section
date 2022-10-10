@@ -1,24 +1,35 @@
 import {useState} from 'react';
+import Comment from './Comment';
 
-interface Comment {
+export interface CommentProps {
   id: number;
   content: string;
-  resp: Comment[];
+  resp?: CommentProps[];
 }
+
 function App() {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentProps[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [cId, setCId] = useState(0);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    const commentObj: CommentProps = {id: cId, content: newComment};
+    setComments([...comments, commentObj]);
+    setCId(cId + 1);
   };
-  console.log(newComment);
+
   return (
     <div className='w-full h-full flex flex-col justify-center items-center bg-amber-400 p-10'>
       <h1 className='text-6xl font-bold text-slate-700 text-center p-20'>Article Of The Year!</h1>
-      <div className='bg-slate-600 text-white font-mono font-medium rounded-lg px-12 py-16'>
-        <p className='text-lg pb-6'>
-          Author: <span className='font-bold'>Lorem</span>
+      <div className='bg-slate-600 text-white font-mono font-medium rounded-lg p-20'>
+        <p className='text-lg pb-6 flex flex-col'>
+          <span>
+            Author: <span className='font-bold'>Lorem</span>
+          </span>
+          <span>
+            Created: <span className='font-bold'>10. 10. 2022</span>
+          </span>
         </p>
         <article>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe reiciendis quam totam quas? Tempore dolorem facere soluta mollitia at nisi
@@ -33,7 +44,7 @@ function App() {
         </article>
       </div>
       <section className='text-center px-12 py-16'>
-        <h2 className='text-4xl text-slate-700 font-semibold p-8'>Comments</h2>
+        <h2 className='text-4xl text-slate-700 font-semibold p-8 border-b-2 border-slate-700 border-dashed m-8'>Comments</h2>
         <div className='bg-slate-600 rounded-lg px-24 py-16'>
           <form onSubmit={handleSubmit} className='flex flex-col items-center'>
             <textarea
@@ -52,6 +63,11 @@ function App() {
             />
           </form>
         </div>
+      </section>
+      <section className='border-t-2 border-slate-700 p-8'>
+        {comments.map((com: CommentProps) => (
+          <Comment key={com.id} id={com.id} content={com.content} />
+        ))}
       </section>
     </div>
   );
