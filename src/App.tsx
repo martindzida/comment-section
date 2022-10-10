@@ -5,16 +5,22 @@ export interface CommentProps {
   id: number;
   content: string;
   resp?: CommentProps[];
+  getParentId: (pId: number) => void;
 }
 
 function App() {
   const [comments, setComments] = useState<CommentProps[]>([]);
   const [newComment, setNewComment] = useState('');
   const [cId, setCId] = useState(0);
+  const [replyParentCId, setReplyParentCId] = useState<number>();
+
+  const getParentId = (pId: number) => {
+    setReplyParentCId(pId);
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const commentObj: CommentProps = {id: cId, content: newComment};
+    const commentObj: CommentProps = {id: cId, content: newComment, getParentId: getParentId};
     setComments([...comments, commentObj]);
     setCId(cId + 1);
   };
@@ -43,30 +49,31 @@ function App() {
           incidunt exercitationem sed neque ab ex sint earum.
         </article>
       </div>
-      <section className='text-center px-12 py-16'>
+      <section className='flex flex-col items-center text-center w-full md:w-5/6 px-12 py-16'>
         <h2 className='text-4xl text-slate-700 font-semibold p-8 border-b-2 border-slate-700 border-dashed m-8'>Comments</h2>
-        <div className='bg-slate-600 rounded-lg px-24 py-16'>
-          <form onSubmit={handleSubmit} className='flex flex-col items-center'>
-            <textarea
-              className='resize-none bg-slate-500 text-white font-mono text-lg caret-amber-400 rounded-lg p-6'
-              name='newComment'
-              id='newComment'
-              placeholder='Add new comment...'
-              rows={10}
-              value={newComment}
-              onChange={e => setNewComment(e.target.value)}
-            />
-            <input
-              className='bg-slate-500 text-white font-mono text-lg font-semibold p-2 mt-6 rounded-lg cursor-pointer'
-              type='submit'
-              value='Add Comment'
-            />
-          </form>
-        </div>
+        <form onSubmit={handleSubmit} className='flex flex-col items-center bg-slate-600 rounded-lg  w-full p-10'>
+          <textarea
+            className='resize-none w-full bg-slate-500 text-white font-mono text-lg caret-amber-400 rounded-lg p-6 focus:outline-none'
+            name='newComment'
+            id='newComment'
+            placeholder='Add new comment...'
+            rows={6}
+            value={newComment}
+            onChange={e => setNewComment(e.target.value)}
+          />
+          {replyParentCId !== undefined && (
+            <strong className='bg-rose-500 text-white font-mono text-semibold rounded-lg p-2 mt-4'>Replying to: #{replyParentCId + 1}</strong>
+          )}
+          <input
+            className='bg-slate-500 text-white font-mono text-lg font-semibold p-2 mt-10 rounded-lg cursor-pointer'
+            type='submit'
+            value='Add Comment'
+          />
+        </form>
       </section>
-      <section className='border-t-2 border-slate-700 p-8'>
+      <section className='flex flex-col items-center w-full md:w-5/6 border-t-2 border-slate-700 p-8'>
         {comments.map((com: CommentProps) => (
-          <Comment key={com.id} id={com.id} content={com.content} />
+          <Comment key={com.id} id={com.id} content={com.content} getParentId={getParentId} />
         ))}
       </section>
     </div>
