@@ -1,10 +1,11 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Comment from './Comment';
 import ReplyNotification from './ReplyNotification';
 
 export interface CommentProps {
   id: number;
   content: string;
+  likes: number;
   replies: CommentProps[];
   setReplyParentId: (id: number) => void;
 }
@@ -26,7 +27,7 @@ function App() {
 
     if (submitErr) setSubmitErr(false);
 
-    const newCommentObj: CommentProps = {id: commentId, content: newComment, replies: [], setReplyParentId};
+    const newCommentObj: CommentProps = {id: commentId, content: newComment, likes: 0, replies: [], setReplyParentId};
     setCommentId(commentId + 1);
 
     if (replyParentId === null) {
@@ -51,7 +52,7 @@ function App() {
       <div className='bg-slate-600 text-white font-mono font-medium rounded-lg p-20'>
         <p className='text-lg pb-6 flex flex-col'>
           <span>
-            Author: <span className='font-bold'>Martin Dzida :]</span>
+            Author: <span className='font-bold'>Lorem</span>
           </span>
           <span>
             Created: <span className='font-bold'>10. 10. 2022</span>
@@ -91,8 +92,8 @@ function App() {
         </form>
       </section>
       <section className='flex flex-col items-center w-full md:w-5/6 border-t-2 border-slate-700 p-8'>
-        {comments.map((com: CommentProps) => (
-          <Comment key={com.id} id={com.id} content={com.content} replies={[]} setReplyParentId={setReplyParentId} />
+        {comments.map((comment: CommentProps) => (
+          <Comment key={comment.id} id={comment.id} content={comment.content} replies={[]} likes={0} setReplyParentId={setReplyParentId} />
         ))}
       </section>
     </div>
