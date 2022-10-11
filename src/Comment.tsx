@@ -34,6 +34,9 @@ const Comment = ({id, content, replies, setReplyParentId}: CommentProps) => {
           </svg>
         </button>
       </div>
+      {replies.map(reply => (
+        <Comment key={reply.id} id={reply.id} content={reply.content} replies={reply.replies} setReplyParentId={reply.setReplyParentId} />
+      ))}
     </div>
   );
 };

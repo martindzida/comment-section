@@ -5,7 +5,6 @@ import ReplyNotification from './ReplyNotification';
 export interface CommentProps {
   id: number;
   content: string;
-  likes: number;
   replies: CommentProps[];
   setReplyParentId: (id: number) => void;
 }
@@ -24,11 +23,12 @@ function App() {
       setSubmitErr(true);
       return;
     }
+    setNewComment('');
 
     if (submitErr) setSubmitErr(false);
 
-    const newCommentObj: CommentProps = {id: commentId, content: newComment, likes: 0, replies: [], setReplyParentId};
-    setCommentId(commentId + 1);
+    const newCommentObj: CommentProps = {id: commentId, content: newComment, replies: [], setReplyParentId};
+    setCommentId(commentId => commentId + 1);
 
     if (replyParentId === null) {
       setComments([...comments, newCommentObj]);
@@ -44,7 +44,6 @@ function App() {
       setComments(updatedComments);
     }
   };
-  console.log(comments);
 
   return (
     <div className='w-full h-full flex flex-col justify-center items-center bg-amber-400 p-10'>
@@ -93,7 +92,7 @@ function App() {
       </section>
       <section className='flex flex-col items-center w-full md:w-5/6 border-t-2 border-slate-700 p-8'>
         {comments.map((comment: CommentProps) => (
-          <Comment key={comment.id} id={comment.id} content={comment.content} replies={[]} likes={0} setReplyParentId={setReplyParentId} />
+          <Comment key={comment.id} id={comment.id} content={comment.content} replies={[]} setReplyParentId={setReplyParentId} />
         ))}
       </section>
     </div>
