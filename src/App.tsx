@@ -1,6 +1,7 @@
-import {useState} from 'react';
-import ArticleHeader from './ArticleHeader';
+import {ReactNode, useState} from 'react';
+import Article from './Article';
 import Comment from './Comment';
+import ReplyBtn from './ReplyBtn';
 import ReplyNotification from './ReplyNotification';
 
 export interface CommentProps {
@@ -8,6 +9,7 @@ export interface CommentProps {
   content: string;
   replies: CommentProps[];
   setReplyParentId: (id: number) => void;
+  children?: ReactNode;
 }
 
 function App() {
@@ -47,24 +49,13 @@ function App() {
   };
 
   const date = new Date();
+  const text =
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, libero optio ipsam natus ut, beatae id quam iure tempore eaque, deleniti voluptate error nisi recusandae assumenda dolorem itaque animi perferendis numquam nam aut repudiandae necessitatibus placeat velit. A, tempore quisquam illo sequi repellendus accusamus mollitia veniam similique, cum tempora laudantium eos excepturi maxime nobis iusto! Commodi sed temporibus beatae placeat.';
 
   return (
     <div className='w-full h-full flex flex-col justify-center items-center bg-amber-400 p-16'>
       <h1 className='text-6xl font-bold text-slate-700 text-center p-20'>Article Of The Year!</h1>
-      <div className='bg-slate-600 text-white font-mono font-medium rounded-lg p-20'>
-        <ArticleHeader author='Lorem' createdAt={date} />
-        <article>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe reiciendis quam totam quas? Tempore dolorem facere soluta mollitia at nisi
-          aliquam optio laudantium praesentium omnis est corporis aliquid, commodi quo reprehenderit cum aut velit asperiores labore vitae!
-          Exercitationem velit consequuntur distinctio repudiandae accusantium unde dolor veritatis deserunt dolorum ipsam. Voluptas commodi
-          voluptatibus hic in ipsam. Repellat minima officia sint corrupti quia, corporis magni quod! Reprehenderit, quas veniam iste qui facere sit a
-          corporis accusantium fugiat delectus excepturi, veritatis voluptates. Provident sint ratione beatae distinctio, nulla quod nam explicabo
-          necessitatibus deserunt placeat, error a laudantium sapiente ipsum optio quidem ut repellat. Itaque alias tempora blanditiis voluptatem
-          numquam dolorum, quam, quisquam odit et aliquid commodi. Nemo, cumque nulla, iusto debitis enim non error eaque impedit architecto ipsum
-          necessitatibus sit. Veritatis, voluptate. Vel optio asperiores officia molestias delectus magni ut soluta maiores praesentium numquam, non
-          incidunt exercitationem sed neque ab ex sint earum.
-        </article>
-      </div>
+      <Article author='Lorem' createdAt={date} text={text} />
       <section className='flex flex-col items-center text-center w-full md:w-5/6 px-12 py-16'>
         <h2 className='text-4xl text-slate-700 font-semibold p-8 border-b-2 border-slate-700 border-dashed m-8'>Comments</h2>
         <form onSubmit={handleSubmit} className='flex flex-col items-center bg-slate-600 rounded-lg  w-full p-10'>
@@ -88,7 +79,9 @@ function App() {
       </section>
       <section className='flex flex-col items-center w-full md:w-5/6 border-t-2 border-slate-700 p-8'>
         {comments.map((comment: CommentProps) => (
-          <Comment key={comment.id} id={comment.id} content={comment.content} replies={comment.replies} setReplyParentId={setReplyParentId} />
+          <Comment key={comment.id} {...comment}>
+            <ReplyBtn id={comment.id} handleReply={setReplyParentId} />
+          </Comment>
         ))}
       </section>
     </div>
