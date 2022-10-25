@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import Comment from './Comment';
 import ReplyNotification from './ReplyNotification';
 
@@ -46,7 +46,7 @@ function App() {
   };
 
   return (
-    <div className='w-full h-full flex flex-col justify-center items-center bg-amber-400 p-10'>
+    <div className='w-full h-full flex flex-col justify-center items-center bg-amber-400 p-16'>
       <h1 className='text-6xl font-bold text-slate-700 text-center p-20'>Article Of The Year!</h1>
       <div className='bg-slate-600 text-white font-mono font-medium rounded-lg p-20'>
         <p className='text-lg pb-6 flex flex-col'>
@@ -92,7 +92,7 @@ function App() {
       </section>
       <section className='flex flex-col items-center w-full md:w-5/6 border-t-2 border-slate-700 p-8'>
         {comments.map((comment: CommentProps) => (
-          <Comment key={comment.id} id={comment.id} content={comment.content} replies={[]} setReplyParentId={setReplyParentId} />
+          <Comment key={comment.id} id={comment.id} content={comment.content} replies={comment.replies} setReplyParentId={setReplyParentId} />
         ))}
       </section>
     </div>
